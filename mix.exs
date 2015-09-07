@@ -12,7 +12,7 @@ defmodule HelloTestServer.Mixfile do
   end
 
   defp escript do
-    [main_module: HelloTestServer, embed_elixir: true]
+    [main_module: HelloTestServer.Cli, embed_elixir: true, app: nil]
   end
 
   # Configuration for the OTP application
