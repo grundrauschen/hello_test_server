@@ -1,5 +1,6 @@
 defmodule HelloTestServer do
   use Application
+  use Mix.Config
 
   # See http://elixir-lang.org/docs/stable/elixir/Application.html
   # for more information on OTP Applications
@@ -97,6 +98,55 @@ defmodule HelloTestServer do
   defp choose_reply(files, counter) do
     Enum.at(files, rem(counter, length(files)))
   end
+
+  @doc """
+  Defines the command line behaviour
+  """
+  def main(argv) do
+    argv
+    |> parse_args
+    |> run_application
+  end
+
+  def parse_args(args) do
+    parsed_args = OptionParser.parse(args, switches: [ help: :boolean,
+                                                       url: :string,
+                                                       path: :string],
+                                     aliases: [h: :help])
+    case parsed_args do
+      {[help: true], _, _} -> :help
+      {[], _, _}           -> :help
+      {args, _, _}         -> args
+                         _ -> :help
+    end
+  end
+
+  def run_application(:help) do
+    IO.puts """
+    usage: hello_test_server [-h | --help] [--url URL] [--path PATH]
+
+    where URL in form of <protocol>://<host>[:<port>]
+    Supported protocols are: zmq-tcp, zmq-tcp6, zmq-ipc, http
+    It is possible to specify port as 0 or * to using only mdns registration
+
+    PATH has to contain the possible requests in the format:
+    <PATH>/request/response[1..n].json
+    """
+  end
+
+  def run_application(args) do
+    Enum.map(args, fn keyword_arg -> config_arg(keyword_arg) end)
+    Application.start(HelloTestServer)
+  end
+
+  defp config_arg(url: arg) do
+    Application.put_env(:hello_test_server, :listen, to_char_list(arg), persistent: true)
+  end
+
+  defp config_arg(path: arg) do
+    Application.put_env(:hello_test_server, :respond_path, to_string(arg), persistent: true)
+  end
+
 end
 
 defmodule HelloTestServer.Router do
