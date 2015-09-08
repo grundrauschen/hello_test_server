@@ -16,7 +16,7 @@ defmodule Mix.Tasks.Hellotest do
 
   def parse_args(args) do
     parsed_args = OptionParser.parse(args, strict: [ help: :boolean,
-                                                     url: :string,
+                                                     listen: :string,
                                                      path: :string],
                                      aliases: [h: :help])
     case parsed_args do
@@ -29,7 +29,7 @@ defmodule Mix.Tasks.Hellotest do
 
   def run_application(:help) do
     IO.puts """
-    usage: hello_test_server [-h | --help] [--url URL] [--path PATH]
+    usage: hello_test_server [-h | --help] [--listen URL] [--path PATH]
 
     where URL in form of <protocol>://<host>[:<port>]
     Supported protocols are: zmq-tcp, zmq-tcp6, zmq-ipc, http
@@ -48,7 +48,7 @@ defmodule Mix.Tasks.Hellotest do
     no_halt()
   end
 
-  defp config_arg({:url, arg}) do
+  defp config_arg({:listen, arg}) do
     Application.put_env(:hello_test_server, :listen, to_char_list(arg), persistent: true)
   end
 

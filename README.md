@@ -24,7 +24,7 @@ There are two ways of running the HelloTestServer.
 At first you are able to run it as a mix task, which works really well for prototyping.
 After building the test-server (see below) just run
 
-    $> mix hellotest --url  zmq-tcp://127.0.0.1:26000 --path PATH
+    $> mix hellotest --listen  zmq-tcp://127.0.0.1:26000 --path PATH
 
 The parameters for the URL can be shown by
 
