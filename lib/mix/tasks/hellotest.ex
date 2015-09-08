@@ -1,8 +1,10 @@
 defmodule Mix.Tasks.Hellotest do
   use Mix.Task
 
+  @version Mix.Project.config[:version]
+
   @shortdoc "Generate hellotestserver escript"
-    @doc """
+  @doc """
   Defines the command line behaviour
   """
   def run(argv) do
@@ -36,7 +38,6 @@ defmodule Mix.Tasks.Hellotest do
     PATH has to contain the possible requests in the format:
     <PATH>/request/response[1..n].json
     """
-    IO.puts(System.cwd)
     exit(:shutdown)
   end
 

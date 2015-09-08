@@ -52,7 +52,7 @@ defmodule HelloTestServer do
 
   def handle_request(_context, method, args, state) do
     if Application.get_env(:hello_test_server, :run_script) do
-      dirname = System.cwd! |> Path.join(path()) |> Path.join(method)
+      dirname = System.cwd! |> rel_path_join(path()) |> Path.join(method)
     else
       dirname = Application.app_dir(:hello_test_server, path()) |> Path.join(method)
     end
@@ -101,6 +101,14 @@ defmodule HelloTestServer do
 
   defp choose_reply(files, counter) do
     Enum.at(files, rem(counter, length(files)))
+  end
+
+  defp rel_path_join(path1, path2) do
+    if Path.type(path2) == :absolute do
+      path2
+    else
+      Path.join(path1, path2) |> Path.expand
+    end
   end
 
 end
