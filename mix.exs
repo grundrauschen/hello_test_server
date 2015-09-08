@@ -3,7 +3,7 @@ defmodule HelloTestServer.Mixfile do
 
   def project do
     [app: :hello_test_server,
-     version: "0.1.0",
+     version: "0.2.0",
      test_coverage: [tool: Coverex.Task, coveralls: true],
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
