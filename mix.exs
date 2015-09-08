@@ -7,12 +7,7 @@ defmodule HelloTestServer.Mixfile do
      test_coverage: [tool: Coverex.Task, coveralls: true],
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
-     escript: escript,
      deps: deps(Mix.env)]
-  end
-
-  defp escript do
-    [main_module: HelloTestServer.Cli, embed_elixir: true, app: nil]
   end
 
   # Configuration for the OTP application

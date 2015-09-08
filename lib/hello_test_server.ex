@@ -20,6 +20,7 @@ defmodule HelloTestServer do
     Supervisor.start_link(children, opts)
   end
 
+
   def url(), do: Application.get_env(:hello_test_server, :listen)
   defp path(), do: Application.get_env(:hello_test_server, :respond_path)
   def name(), do: "ping/server"
@@ -50,7 +51,11 @@ defmodule HelloTestServer do
   end
 
   def handle_request(_context, method, args, state) do
-    dirname = Application.app_dir(:hello_test_server, path()) |> Path.join(method)
+    if Application.get_env(:hello_test_server, :run_script) do
+      dirname = System.cwd! |> Path.join(path()) |> Path.join(method)
+    else
+      dirname = Application.app_dir(:hello_test_server, path()) |> Path.join(method)
+    end
     case File.ls(dirname) do
       {:ok, files} -> 
         counter = case :ets.lookup(@rrtable, method) do
@@ -97,6 +102,7 @@ defmodule HelloTestServer do
   defp choose_reply(files, counter) do
     Enum.at(files, rem(counter, length(files)))
   end
+
 end
 
 defmodule HelloTestServer.Router do

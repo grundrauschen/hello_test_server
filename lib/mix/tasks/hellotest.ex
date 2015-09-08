@@ -1,13 +1,11 @@
-defmodule HelloTestServer.Cli do
-  @moduledoc """
-  Command line interface for changing parameters used by the HelloTestSever
-  """
-  #use Application
+defmodule Mix.Tasks.Hellotest do
+  use Mix.Task
 
-  @doc """
+  @shortdoc "Generate hellotestserver escript"
+    @doc """
   Defines the command line behaviour
   """
-  def main(argv) do
+  def run(argv) do
     argv
     |> parse_args
     |> run_application
@@ -15,15 +13,15 @@ defmodule HelloTestServer.Cli do
   end
 
   def parse_args(args) do
-    parsed_args = OptionParser.parse(args, switches: [ help: :boolean,
-                                                       url: :string,
-                                                       path: :string],
+    parsed_args = OptionParser.parse(args, strict: [ help: :boolean,
+                                                     url: :string,
+                                                     path: :string],
                                      aliases: [h: :help])
     case parsed_args do
-      {[help: true], _, _} -> :help
-      {[], _, _}           -> :help
-      {args, _, _}         -> args
-                         _ -> :help
+      {[help: true], _, _}                -> :help
+      {[], _, _}                          -> :help
+      {args, _, _} when length(args) == 2 -> args
+                                        _ -> :help
     end
   end
 
@@ -38,10 +36,13 @@ defmodule HelloTestServer.Cli do
     PATH has to contain the possible requests in the format:
     <PATH>/request/response[1..n].json
     """
+    IO.puts(System.cwd)
+    exit(:shutdown)
   end
 
   def run_application(args) do
     Enum.map(args, fn keyword_arg -> config_arg keyword_arg end)
+    Application.put_env(:hello_test_server, :run_script, true, persistent: true)
     Application.ensure_all_started(:hello_test_server)
   end
 
@@ -52,6 +53,4 @@ defmodule HelloTestServer.Cli do
   defp config_arg({:path, arg}) do
     Application.put_env(:hello_test_server, :respond_path, to_string(arg), persistent: true)
   end
-
-
 end
