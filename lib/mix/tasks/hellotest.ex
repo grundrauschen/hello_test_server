@@ -43,7 +43,8 @@ defmodule Mix.Tasks.Hellotest do
   def run_application(args) do
     Enum.map(args, fn keyword_arg -> config_arg keyword_arg end)
     Application.put_env(:hello_test_server, :run_script, true, persistent: true)
-    Application.ensure_all_started(:hello_test_server)
+    Mix.Task.run "app.start", []
+    no_halt()
   end
 
   defp config_arg({:url, arg}) do
@@ -52,5 +53,13 @@ defmodule Mix.Tasks.Hellotest do
 
   defp config_arg({:path, arg}) do
     Application.put_env(:hello_test_server, :respond_path, to_string(arg), persistent: true)
+  end
+  
+  defp no_halt do
+    unless iex_running?, do: :timer.sleep(:infinity)
+  end
+
+  defp iex_running? do
+    Code.ensure_loaded?(IEx) && IEx.started?
   end
 end
